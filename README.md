@@ -206,27 +206,26 @@ Perintah tersebut juga menghapus named volume sehingga data database yang tersim
 
 ### Tampilan Aplikasi
 <img width="1512" height="982" alt="Tangkapan Layar 2026-11-09 pukul 23 05 37" src="https://github.com/user-attachments/assets/f0617287-4f9e-401b-a2b5-9775d04455f4" />
-![Tampilan aplikasi](screenshots/homepage.png)
 
 ### Docker Compose
+<img width="386" height="94" alt="image" src="https://github.com/user-attachments/assets/ff6b2d61-73fc-4707-a37a-3edb66e6a3ef" />
 
-![Docker Compose PS](screenshots/docker-compose-ps.png)
 
 ### Pengujian API
 
 **GET Request — HTTP 200 OK**
 
-![GET API](screenshots/api-get.png)
+<img width="386" height="190" alt="image" src="https://github.com/user-attachments/assets/395cf9cf-093f-4cb8-80a8-d7b0a6eb94bb" />
 
 **POST Request — HTTP 201 Created**
 
-![POST API](screenshots/api-post.png)
+<img width="441" height="257" alt="image" src="https://github.com/user-attachments/assets/4f1d0b51-7951-483e-a522-a24bb218d9b4" />
 
 ### Pengujian Persistensi Database
 
-![Pengujian persistensi](screenshots/persistence.png)
+<img width="323" height="188" alt="image" src="https://github.com/user-attachments/assets/acfe2757-a8cd-4388-8088-8fca938cdb55" />
+<img width="336" height="183" alt="image" src="https://github.com/user-attachments/assets/b242699a-3693-45cd-a589-f4aad171c4bf" />
 
-*Catatan: Tambahkan file screenshot sesuai nama dan lokasi yang digunakan pada folder `screenshots`.*
 
 ## 9. Artikel dan Video Demo
 
