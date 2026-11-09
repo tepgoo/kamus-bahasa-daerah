@@ -1,0 +1,85 @@
+# docker-compose.yml: mendefinisikan layanan aplikasi, database, dan (opsional) Adminer.
+
+services:
+  # ---------- Layanan 1: database MySQL ----------
+  db:
+    # Image resmi MySQL versi 8.4 (tag versi, bukan latest).
+    image: mysql:8.4
+    container_name: kamus_db
+    # Otomatis menyala lagi bila container berhenti karena error atau komputer restart.
+    restart: unless-stopped
+    # Konfigurasi dibaca dari file .env (yang di-commit hanya .env.example).
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}   # password user root
+      MYSQL_DATABASE: ${DB_NAME}                    # database yang otomatis dibuat
+      MYSQL_USER: ${DB_USER}                        # user khusus aplikasi (bukan root)
+      MYSQL_PASSWORD: ${DB_PASSWORD}                # password user aplikasi
+    # Pakai utf8mb4 agar huruf seperti "é" tersimpan dengan benar.
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      # Named volume: data tetap ada walau container dihapus (kecuali `docker compose down -v`).
+      - db_data:/var/lib/mysql
+      # Dijalankan otomatis saat database pertama kali dibuat (tabel + data contoh). ":ro" = read-only.
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    # Gabungkan ke network buatan sendiri (lihat bagian networks di bawah).
+    networks:
+      - kamus_net
+    # Healthcheck: Docker rutin mengecek apakah MySQL sudah siap menerima koneksi.
+    healthcheck:
+      # 127.0.0.1 (koneksi TCP) dipakai agar server sementara saat inisialisasi tidak dianggap siap.
+      # "$$" agar Compose tidak mengganti variabelnya; yang membaca adalah shell di dalam container.
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s       # cek setiap 5 detik
+      timeout: 5s        # satu pengecekan gagal bila lebih dari 5 detik
+      retries: 20        # gagal 20 kali berturut-turut baru dianggap unhealthy
+      start_period: 20s  # waktu awal untuk inisialisasi pertama
+
+  # ---------- Layanan 2: aplikasi Node.js ----------
+  app:
+    # Bangun image dari Dockerfile di folder ini.
+    build: .
+    container_name: kamus_app
+    restart: unless-stopped
+    environment:
+      DB_HOST: db                    # nama service "db" menjadi hostname di network (bukan IP/localhost)
+      DB_PORT: 3306
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      ADMIN_TOKEN: ${ADMIN_TOKEN}    # token untuk menambah, mengubah, dan menghapus kata
+    ports:
+      # "port_komputer:port_container". Port database sengaja TIDAK dibuka ke luar.
+      - "${APP_PORT:-3000}:3000"
+    networks:
+      - kamus_net
+    # Aplikasi baru dijalankan setelah database berstatus healthy.
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ---------- Layanan 3 (opsional): Adminer untuk melihat isi database ----------
+  adminer:
+    image: adminer:4
+    container_name: kamus_adminer
+    # Profile "tools": layanan ini TIDAK menyala pada `docker compose up` biasa.
+    # Nyalakan dengan: docker compose --profile tools up -d
+    profiles: ["tools"]
+    environment:
+      ADMINER_DEFAULT_SERVER: db     # otomatis terhubung ke service "db"
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    networks:
+      - kamus_net
+    depends_on:
+      db:
+        condition: service_healthy
+
+# Network buatan sendiri (user-defined bridge): container saling menemukan lewat nama service,
+# dan terpisah dari container lain di komputer.
+networks:
+  kamus_net:
+    driver: bridge
+
+# Named volume untuk data database.
+volumes:
+  db_data:

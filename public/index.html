@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kamus Bahasa Daerah</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="situs">
+    <div class="wadah">
+      <h1>Kamus Bahasa Daerah</h1>
+      <p class="sub">Cari padanan kata menurut tingkat kesopanan: halus, sedang, dan akrab.</p>
+    </div>
+  </header>
+
+  <main class="wadah">
+    <form id="form-cari" class="cari" role="search">
+      <label class="sr-only" for="q">Cari kata</label>
+      <input id="q" type="search" placeholder="Ketik kata Indonesia atau kata daerah, mis. makan" autocomplete="off">
+      <label class="sr-only" for="tingkat">Tingkat kesopanan</label>
+      <select id="tingkat">
+        <option value="">Semua tingkat</option>
+        <option value="halus">Halus</option>
+        <option value="sedang">Sedang</option>
+        <option value="akrab">Akrab</option>
+      </select>
+      <button type="submit" class="btn utama">Cari</button>
+    </form>
+
+    <section class="admin" aria-label="Pengelolaan kamus">
+      <label for="token">Token admin</label>
+      <input id="token" type="password" placeholder="Isi untuk menambah/mengubah/menghapus" autocomplete="off">
+      <button id="btn-tambah" type="button" class="btn">Tambah kata</button>
+    </section>
+
+    <p id="jumlah" class="jumlah" aria-live="polite"></p>
+    <div id="hasil" class="hasil"></div>
+  </main>
+
+  <footer class="wadah kaki">
+    <p>Proyek UTS COMP6991031. Data contoh hanya untuk keperluan demo.</p>
+  </footer>
+
+  <dialog id="dialog-kata">
+    <form id="form-kata" method="dialog">
+      <h2 id="form-judul">Tambah kata</h2>
+      <input type="hidden" name="kata_id">
+
+      <div class="baris">
+        <label>Kata Indonesia
+          <input name="kata_indonesia" maxlength="100" required>
+        </label>
+        <label>Kategori (opsional)
+          <input name="kategori" maxlength="50" placeholder="mis. kata kerja">
+        </label>
+      </div>
+
+      <p class="petunjuk">Isi minimal satu tingkat. Tingkat yang kolom katanya kosong tidak disimpan.</p>
+      <div id="tier-fields"></div>
+
+      <p id="form-error" class="error" role="alert" hidden></p>
+      <div class="aksi-form">
+        <button type="button" id="btn-batal" class="btn">Batal</button>
+        <button type="submit" class="btn utama">Simpan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
