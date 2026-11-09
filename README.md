@@ -229,7 +229,7 @@ Perintah tersebut juga menghapus named volume sehingga data database yang tersim
 
 ## 9. Artikel dan Video Demo
 
-- **GitHub Repository:** [Link Repository](https://github.com/USERNAME/kamus-bahasa-daerah)
+- **GitHub Repository:** [Link Repository](https://github.com/tepgoo/kamus-bahasa-daerah)
 - **Artikel Project:** [Link Artikel]
 - **Video Demo YouTube:** [Link Video]
 
@@ -237,7 +237,7 @@ Perintah tersebut juga menghapus named volume sehingga data database yang tersim
 
 Dalam proses pengerjaan project ini, AI digunakan sebagai alat bantu dengan kategori penggunaan **Partial**.
 
-**AI Tool:** ChatGPT (OpenAI)
+**AI Tool:** Claude
 
 **Bagian yang dibantu oleh AI:**
 - Brainstorming dan penyusunan penjelasan konsep Docker dan Docker Compose.
