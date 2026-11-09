@@ -205,7 +205,7 @@ Perintah tersebut juga menghapus named volume sehingga data database yang tersim
 ## 8. Screenshot Aplikasi dan Pengujian
 
 ### Tampilan Aplikasi
-
+<img width="1512" height="982" alt="Tangkapan Layar 2026-11-09 pukul 23 05 37" src="https://github.com/user-attachments/assets/f0617287-4f9e-401b-a2b5-9775d04455f4" />
 ![Tampilan aplikasi](screenshots/homepage.png)
 
 ### Docker Compose
