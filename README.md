@@ -230,25 +230,24 @@ Perintah tersebut juga menghapus named volume sehingga data database yang tersim
 ## 9. Artikel dan Video Demo
 
 - **GitHub Repository:** [Link Repository](https://github.com/tepgoo/kamus-bahasa-daerah)
-- **Artikel Project:** [Link Artikel]
-- **Video Demo YouTube:** [Link Video]
+- **Artikel Project:** https://medium.com/@stefanygo666/building-a-regional-language-dictionary-web-application-with-docker-compose-fbe9da0213e9
+- **Video Demo YouTube:** https://youtu.be/qP_L7s_vLCQ
 
 ## 10. AI Usage Declaration
 
 Dalam proses pengerjaan project ini, AI digunakan sebagai alat bantu dengan kategori penggunaan **Partial**.
 
-**AI Tool:** Claude
+**AI Tool:** Claude (Anthropic).
 
 **Bagian yang dibantu oleh AI:**
-- Brainstorming dan penyusunan penjelasan konsep Docker dan Docker Compose.
-- Membantu memahami serta melakukan troubleshooting konfigurasi Dockerfile dan Docker Compose.
-- Membantu menyusun perintah pengujian API menggunakan curl.
-- Membantu menyusun kerangka dokumentasi README dan penjelasan project.
+- Brainstorming ide topik proyek
+- Kerangka awal kode: backend Express (endpoint CRUD, validasi input, token admin), frontend web, skema database SQL, Dockerfile multi-stage, dan docker-compose.yml beserta komentarnya.
+- Penyusunan data awal kosakata bahasa Sunda (disusun AI, sebagian dicocokkan dengan rujukan di bagian "Sumber data").
 
 **Contoh prompt yang digunakan:**
-- "Jelaskan bagaimana multi-stage build membuat ukuran Docker image tetap kecil."
-- "Bantu saya menguji endpoint GET dan POST menggunakan curl pada project Node.js dan Express."
-- "Jelaskan cara menguji persistensi database menggunakan docker compose down dan docker compose up."
+- "Berikan ide topik proyek yang tidak mainstream tetapi tetap menerapkan CRUD."
+- "Bantu saya mengerjakan kerangka kode, Docker Compose, dan README."
+- "Bantu saya menyesuaikan Dockerfile dan docker-compose.yml dengan soal (multi-stage build, network, profile, endpoint /health)."
 
 AI digunakan sebagai pendamping dalam proses pembelajaran dan dokumentasi. Implementasi, penyesuaian konfigurasi, pengujian aplikasi, serta verifikasi hasil dilakukan oleh pengembang. Penggunaan AI tidak dimaksudkan untuk menggantikan pemahaman terhadap kode dan konfigurasi yang digunakan.
 
