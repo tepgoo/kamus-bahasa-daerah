@@ -1,128 +1,268 @@
 # Kamus Bahasa Daerah
 
-Aplikasi web kamus kosakata bahasa daerah yang mengelompokkan padanan kata berdasarkan **tingkat kesopanan**: halus, sedang, dan akrab. Proyek ini dibuat untuk UTS COMP6991031 (kategori: **Web**).
+Aplikasi web Kamus Bahasa Daerah merupakan aplikasi yang membantu pengguna mencari padanan kata bahasa Indonesia ke dalam bahasa daerah berdasarkan tiga tingkat kesopanan, yaitu **halus, sedang, dan akrab**.
 
-## Masalah dan target pengguna
+Project ini dibuat sebagai implementasi aplikasi multi-tier menggunakan Docker dan Docker Compose. Aplikasi memiliki fitur pencarian kata, penampilan padanan bahasa daerah, serta pengelolaan data kamus melalui API.
 
-Kamus daring bahasa daerah masih sangat terbatas dan umumnya hanya menerjemahkan kata, sehingga penutur muda sering bingung memilih kata yang pantas untuk orang tua atau orang yang dihormati. Target pengguna: generasi muda yang kurang fasih berbahasa daerah, pembelajar bahasa daerah, dan pengelola konten budaya.
+## 1. Latar Belakang dan Tujuan Project
 
-## Fitur inti (MVP)
+Bahasa daerah memiliki variasi penggunaan kata yang dapat berbeda berdasarkan tingkat kesopanan dan situasi komunikasi. Hal ini terkadang membuat pengguna kesulitan menentukan padanan kata yang sesuai.
 
-**Pencarian padanan kata berdasarkan tingkat kesopanan.** Pengguna mengetik satu kata (Indonesia atau kata daerah), lalu aplikasi menampilkan padanannya di tiga tingkat beserta contoh kalimat dan catatan penggunaan. Hasil bisa difilter per tingkat.
+Oleh karena itu, dibuat aplikasi Kamus Bahasa Daerah yang dapat membantu pengguna menemukan padanan kata berdasarkan tingkat kesopanan secara lebih mudah.
 
-Data kamus dikelola dengan CRUD penuh:
+Project ini juga bertujuan untuk menerapkan konsep containerization menggunakan Docker, sehingga aplikasi dan database dapat dijalankan secara terpisah, lebih terstruktur, dan mudah dipindahkan ke lingkungan lain.
 
-| Operasi | Endpoint | Perlu token admin |
-|---|---|---|
-| Create | `POST /api/kata` | Ya |
-| Read (daftar + cari) | `GET /api/kata?q=&tingkat=` | Tidak |
-| Read (satu kata) | `GET /api/kata/:id` | Tidak |
-| Update | `PUT /api/kata/:id` | Ya |
-| Delete | `DELETE /api/kata/:id` | Ya |
-| Cek kesehatan | `GET /health` (juga tersedia di `/api/health`) | Tidak |
+## 2. Fitur Aplikasi
 
-Token admin dikirim lewat header `x-admin-token`. Nilainya diatur di file `.env`.
+- Menampilkan daftar kata bahasa Indonesia dan padanannya.
+- Mencari kata berdasarkan kata Indonesia atau kata daerah.
+- Memfilter padanan berdasarkan tingkat kesopanan.
+- Menampilkan detail kata beserta contoh kalimat dan catatan.
+- Menambahkan, mengubah, dan menghapus data melalui API dengan autentikasi admin.
+- Menyediakan endpoint health check untuk memeriksa kondisi aplikasi dan database.
 
-## Teknologi
+## 3. Teknologi yang Digunakan
 
-- Node.js 22 + Express (backend dan REST API)
-- MySQL 8.4 (database; tabel `kata` berelasi satu-ke-banyak dengan `padanan`)
-- HTML, CSS, dan JavaScript murni (frontend, tanpa framework)
-- Docker dan Docker Compose (dua layanan: `app` dan `db`)
+| Komponen | Teknologi |
+|---|---|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Node.js 22 dan Express.js |
+| Database | MySQL 8.4 |
+| Database Driver | mysql2 |
+| Containerization | Docker |
+| Container Orchestration | Docker Compose |
 
-## Struktur folder
+## 4. Arsitektur Aplikasi
 
-```
-.
-├── Dockerfile              # resep image aplikasi
-├── docker-compose.yml      # layanan app + db + volume
-├── .env.example            # contoh konfigurasi (salin menjadi .env)
-├── db/init.sql             # skema tabel + data contoh
-├── server.js               # titik masuk Express
-├── src/
-│   ├── db.js               # koneksi MySQL + helper transaksi
-│   ├── auth.js             # middleware token admin
-│   ├── validate.js         # validasi input
-│   └── routes/kata.js      # endpoint CRUD
-└── public/                 # halaman web (index.html, style.css, app.js)
-```
+Aplikasi menggunakan arsitektur multi-tier yang terdiri dari frontend, backend, dan database.
 
-## Cara menjalankan (localhost, Docker Compose)
+- **Frontend:** Menampilkan halaman aplikasi melalui HTML, CSS, dan JavaScript.
+- **Backend:** Menggunakan Node.js dan Express.js untuk menangani request serta menyediakan REST API.
+- **Database:** Menggunakan MySQL 8.4 untuk menyimpan data kata dan padanan bahasa daerah.
 
-Prasyarat: Docker dan Docker Compose terpasang.
+Frontend dan backend berjalan dalam satu container aplikasi, sedangkan database berjalan dalam container terpisah.
+
+Docker Compose menghubungkan kedua container melalui user-defined network `kamus_net`. Data MySQL disimpan menggunakan named volume `db_data` agar tetap tersedia meskipun container dihentikan atau dibuat ulang.
+
+## 5. Cara Menjalankan Project
+
+### Prasyarat
+
+Pastikan perangkat sudah memiliki:
+- Git
+- Docker Desktop
+- Docker Compose
+
+### Langkah 1: Clone Repository
 
 ```bash
-# 1. Salin konfigurasi lalu ganti semua nilai "ganti_..." di .env
+git clone https://github.com/USERNAME/kamus-bahasa-daerah.git
+```
+
+Masuk ke folder project:
+
+```bash
+cd kamus-bahasa-daerah
+```
+
+### Langkah 2: Membuat File Environment
+
+Salin file contoh konfigurasi:
+
+```bash
 cp .env.example .env
+```
 
-# 2. Bangun image dan jalankan semua layanan di latar belakang
+Sesuaikan nilai konfigurasi di file `.env`, termasuk token admin dan kredensial database. Gunakan nilai lokal yang aman dan jangan membagikan file `.env`.
+
+### Langkah 3: Menjalankan Aplikasi
+
+Jalankan perintah:
+
+```bash
 docker compose up -d --build
-
-# 3. Buka di browser
-# http://localhost:3000
 ```
 
-Untuk menambah, mengubah, atau menghapus kata, isi kolom **Token admin** di halaman dengan nilai `ADMIN_TOKEN` dari file `.env`.
+Perintah tersebut akan membangun image aplikasi dan menjalankan container aplikasi beserta database.
 
-Uji endpoint dengan curl:
+### Langkah 4: Memeriksa Container
 
 ```bash
-curl -i http://localhost:3000/health                       # 200 OK
-curl -i "http://localhost:3000/api/kata?q=makan"           # 200 OK
+docker compose ps
+```
+
+Pastikan container aplikasi berjalan dan database menunjukkan status `healthy`.
+
+### Langkah 5: Membuka Aplikasi
+
+Buka browser dan akses:
+
+```text
+http://localhost:3000
+```
+
+Untuk memeriksa kesehatan aplikasi:
+
+```text
+http://localhost:3000/health
+```
+
+Respons yang diharapkan:
+
+```json
+{
+  "status": "ok"
+}
+```
+
+### Menjalankan Adminer (Opsional)
+
+Adminer tersedia melalui Docker Compose profile `tools`.
+
+```bash
+docker compose --profile tools up -d
+```
+
+Adminer dapat diakses melalui:
+
+```text
+http://localhost:8080
+```
+
+## 6. API Endpoint
+
+| Method | Endpoint | Fungsi |
+|---|---|---|
+| GET | `/health` | Memeriksa kesehatan aplikasi dan database |
+| GET | `/api/health` | Memeriksa kesehatan aplikasi dan database |
+| GET | `/api/kata` | Mengambil daftar kata |
+| GET | `/api/kata?q=makan` | Mencari kata |
+| GET | `/api/kata/:id` | Mengambil detail kata |
+| POST | `/api/kata` | Menambahkan data kata |
+| PUT | `/api/kata/:id` | Mengubah data kata |
+| DELETE | `/api/kata/:id` | Menghapus data kata |
+
+Operasi POST, PUT, dan DELETE membutuhkan autentikasi menggunakan header `x-admin-token`.
+
+Contoh pengujian endpoint GET:
+
+```bash
+curl -i http://localhost:3000/api/kata
+```
+
+Contoh pengujian endpoint POST:
+
+```bash
 curl -i -X POST http://localhost:3000/api/kata \
-  -H "Content-Type: application/json" \
-  -H "x-admin-token: ISI_ADMIN_TOKEN" \
-  -d '{"kata_indonesia":"bertanya","padanan":[{"tingkat":"halus","kata_daerah":"naros"},{"tingkat":"sedang","kata_daerah":"nanya"}]}'   # 201 Created
+-H "Content-Type: application/json" \
+-H "x-admin-token: TOKEN_ADMIN_KAMU" \
+-d '{
+  "kata_indonesia": "contoh kata",
+  "kategori": "pengujian",
+  "padanan": [
+    {
+      "tingkat": "akrab",
+      "kata_daerah": "contoh padanan",
+      "contoh_kalimat": "Contoh kalimat penggunaan.",
+      "catatan": "Data pengujian."
+    }
+  ]
+}'
 ```
 
-Adminer (opsional, untuk melihat isi database) dipisahkan dalam profile `tools`:
+## 7. Pengujian Docker dan Persistensi
+
+Pengujian dilakukan untuk memastikan aplikasi dan database dapat berjalan serta data tetap tersimpan setelah container dibuat ulang.
+
+Pemeriksaan container:
 
 ```bash
-docker compose --profile tools up -d    # lalu buka http://localhost:8080 (server: db)
+docker compose ps
 ```
 
-Perintah berguna:
+Menghentikan container:
 
 ```bash
-docker compose down        # hentikan layanan (data tetap tersimpan di volume)
-docker compose down -v     # hentikan dan hapus data (database dibuat ulang dari db/init.sql)
-docker compose logs -f app # lihat log aplikasi
+docker compose down
 ```
 
-## Keamanan dan data pribadi
+Menjalankan kembali container:
 
-- Aplikasi **tidak menyimpan data pribadi** apa pun. Isi database hanya kosakata, contoh kalimat, dan catatan penggunaan, sehingga selaras dengan prinsip minimisasi data dalam UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi.
-- Semua rahasia (password database dan token admin) disimpan di `.env` yang di-ignore Git. Hanya `.env.example` berisi nilai dummy yang di-commit.
-- Query ke database memakai parameter (prepared statement) untuk mencegah SQL injection, dan tampilan web memakai `textContent` untuk mencegah XSS.
-- Port database tidak dibuka ke luar container; hanya aplikasi yang dapat mengaksesnya.
+```bash
+docker compose up -d
+```
 
-## Sumber data kosakata
+Data database disimpan menggunakan named volume `db_data`. Oleh karena itu, data tetap tersedia setelah menjalankan `docker compose down` dan `docker compose up -d`.
 
-Data awal di `db/init.sql` berisi 64 kata Indonesia dengan padanan bahasa Sunda dalam tiga tingkat: **halus** (lemes), **sedang** (loma), dan **akrab** (kasar/akrab antarteman). Kosakata disusun dari pengetahuan umum *undak-usuk basa Sunda* dan sebagian dicocokkan dengan [artikel detikJabar tentang kosakata bahasa Sunda lemes](https://www.detik.com/jabar/budaya/d-6374874/30-kosakata-bahasa-sunda-lemes-atau-halus-disertai-arti-dan-contohnya/amp). Contoh kalimat dan catatan penggunaan ditulis sendiri untuk proyek ini.
+Berbeda dengan perintah berikut:
 
-Kamus ini bersifat terus berkembang: kata baru dapat ditambahkan lewat fitur CRUD di aplikasi. Verifikasi oleh penutur asli atau kamus resmi: [ISI, mis. nama/sumber verifikasi].
+```bash
+docker compose down -v
+```
 
-## Sumber dan atribusi
+Perintah tersebut juga menghapus named volume sehingga data database yang tersimpan di dalamnya ikut terhapus.
 
-- [Express](https://expressjs.com/) (lisensi MIT)
-- [mysql2](https://github.com/sidorares/node-mysql2) (lisensi MIT)
-- Image resmi [Node.js](https://hub.docker.com/_/node) dan [MySQL](https://hub.docker.com/_/mysql) dari Docker Hub
-- Tidak memakai starter framework; struktur proyek dibuat manual.
+## 8. Screenshot Aplikasi dan Pengujian
 
-## AI Usage Declaration
+### Tampilan Aplikasi
 
-Tipe penggunaan AI pada UTS ini: **Partial** (maksimal 50%).
+![Tampilan aplikasi](screenshots/homepage.png)
 
-- **Alat yang dipakai:** Claude (Anthropic).
-- **Bagian yang dibantu AI:** [ISI DENGAN JUJUR. Misalnya: ide dan pemilihan topik; kerangka awal kode backend, frontend, Dockerfile, docker-compose.yml, dan skema SQL; draf README; draf jawaban Soal 2.]
-- **Bagian yang saya kerjakan sendiri:** [ISI DENGAN JUJUR. Misalnya: pengujian dan perbaikan bug, penyesuaian kode, pengisian dan verifikasi data bahasa daerah, pengaturan konfigurasi, penulisan artikel dan skrip video, serta riwayat commit.]
-- **Perkiraan porsi bantuan AI:** [ISI, mis. xx%]
-- **Contoh prompt utama:**
-  1. "Berikan ide topik proyek yang tidak mainstream tetapi tetap menerapkan CRUD."
-  2. "Apa fitur inti untuk ide Kamus Bahasa Daerah?"
-  3. "Bantu menyusun jawaban profil dan alasan pemilihan projek."
-  4. "Bantu kerjakan proyeknya (kerangka kode, Docker Compose, dan README)."
+### Docker Compose
 
-## Lisensi
+![Docker Compose PS](screenshots/docker-compose-ps.png)
 
-MIT
+### Pengujian API
+
+**GET Request — HTTP 200 OK**
+
+![GET API](screenshots/api-get.png)
+
+**POST Request — HTTP 201 Created**
+
+![POST API](screenshots/api-post.png)
+
+### Pengujian Persistensi Database
+
+![Pengujian persistensi](screenshots/persistence.png)
+
+*Catatan: Tambahkan file screenshot sesuai nama dan lokasi yang digunakan pada folder `screenshots`.*
+
+## 9. Artikel dan Video Demo
+
+- **GitHub Repository:** [Link Repository](https://github.com/USERNAME/kamus-bahasa-daerah)
+- **Artikel Project:** [Link Artikel]
+- **Video Demo YouTube:** [Link Video]
+
+## 10. AI Usage Declaration
+
+Dalam proses pengerjaan project ini, AI digunakan sebagai alat bantu dengan kategori penggunaan **Partial**.
+
+**AI Tool:** ChatGPT (OpenAI)
+
+**Bagian yang dibantu oleh AI:**
+- Brainstorming dan penyusunan penjelasan konsep Docker dan Docker Compose.
+- Membantu memahami serta melakukan troubleshooting konfigurasi Dockerfile dan Docker Compose.
+- Membantu menyusun perintah pengujian API menggunakan curl.
+- Membantu menyusun kerangka dokumentasi README dan penjelasan project.
+
+**Contoh prompt yang digunakan:**
+- "Jelaskan bagaimana multi-stage build membuat ukuran Docker image tetap kecil."
+- "Bantu saya menguji endpoint GET dan POST menggunakan curl pada project Node.js dan Express."
+- "Jelaskan cara menguji persistensi database menggunakan docker compose down dan docker compose up."
+
+AI digunakan sebagai pendamping dalam proses pembelajaran dan dokumentasi. Implementasi, penyesuaian konfigurasi, pengujian aplikasi, serta verifikasi hasil dilakukan oleh pengembang. Penggunaan AI tidak dimaksudkan untuk menggantikan pemahaman terhadap kode dan konfigurasi yang digunakan.
+
+## 11. Keamanan dan Pengelolaan Environment
+
+Project ini menggunakan file `.env` untuk menyimpan konfigurasi lokal seperti kredensial database dan token admin.
+
+Untuk menjaga keamanan:
+- File `.env` tidak disertakan dalam repository.
+- File `.env.example` disediakan sebagai template konfigurasi.
+- File `.env` dimasukkan ke `.gitignore`.
+- Jangan mengunggah password, token, atau informasi rahasia ke GitHub.
+
+## 12. License
+
+Project ini menggunakan lisensi MIT.
