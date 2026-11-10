@@ -243,11 +243,13 @@ Dalam proses pengerjaan project ini, AI digunakan sebagai alat bantu dengan kate
 - Brainstorming ide topik proyek
 - Kerangka awal kode: backend Express (endpoint CRUD, validasi input, token admin), frontend web, skema database SQL, Dockerfile multi-stage, dan docker-compose.yml beserta komentarnya.
 - Penyusunan data awal kosakata bahasa Sunda (disusun AI, sebagian dicocokkan dengan rujukan di bagian "Sumber data").
+- Membantu menyusun perintah pengujian API menggunakan curl.
 
 **Contoh prompt yang digunakan:**
 - "Berikan ide topik proyek yang tidak mainstream tetapi tetap menerapkan CRUD."
 - "Bantu saya mengerjakan kerangka kode, Docker Compose, dan README."
 - "Bantu saya menyesuaikan Dockerfile dan docker-compose.yml dengan soal (multi-stage build, network, profile, endpoint /health)."
+- "Bantu saya menguji endpoint GET dan POST menggunakan curl pada project Node.js dan Express."
 
 AI digunakan sebagai pendamping dalam proses pembelajaran dan dokumentasi. Implementasi, penyesuaian konfigurasi, pengujian aplikasi, serta verifikasi hasil dilakukan oleh pengembang. Penggunaan AI tidak dimaksudkan untuk menggantikan pemahaman terhadap kode dan konfigurasi yang digunakan.
 
